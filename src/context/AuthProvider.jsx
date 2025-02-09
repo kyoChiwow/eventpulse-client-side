@@ -1,6 +1,7 @@
 import {
   createUserWithEmailAndPassword,
   onAuthStateChanged,
+  signInAnonymously,
   signInWithEmailAndPassword,
   signOut,
   updateProfile,
@@ -37,6 +38,12 @@ const AuthProvider = ({ children }) => {
   };
   // Login Here
 
+  // Guest Sign in here
+  const signInAsGuest = () => {
+    return signInAnonymously(auth);
+  }
+  // Guest Sign in here
+
   // Log Out here
   const userLogOut = () => {
     return signOut(auth);
@@ -65,6 +72,7 @@ const AuthProvider = ({ children }) => {
   }, [axiosPublic]);
   //   Observer settings here
 
+
   const authInfo = {
     user,
     setUser,
@@ -73,6 +81,7 @@ const AuthProvider = ({ children }) => {
     createUserEmail,
     updateUser,
     loginUserEmail,
+    signInAsGuest,
     userLogOut,
   };
 
