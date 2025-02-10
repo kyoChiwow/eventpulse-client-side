@@ -1,8 +1,14 @@
 import { useEffect, useState } from "react";
 import useAxiosPublic from "../../../hooks/useAxiosPublic";
 import Loading from "../../Loading/Loading";
-import downArrow from "../../../assets/animation/down-arrow.json"
+import downArrow from "../../../assets/animation/down-arrow.json";
 import Lottie from "lottie-react";
+import { MdEventSeat } from "react-icons/md";
+import { io } from "socket.io-client";
+
+const socket = io("http://localhost:5000", {
+  withCredentials: true,
+})
 
 const AllEvents = () => {
   const [events, setEvents] = useState([]);
@@ -25,7 +31,33 @@ const AllEvents = () => {
       }
     };
     fetchEvents();
+
+    // Listen for real-time updates here
+    socket.on("events", (data) => {
+      setEvents(data);
+    });
+
+    socket.on("updateAttendees", (updatedEvent) => {
+      setEvents((prevEvents) =>
+        prevEvents.map((event) =>
+          event._id === updatedEvent.eventId ? { ...event, attendees: updatedEvent.attendees } : event
+        )
+      );
+    });
+
+    return () => {
+      socket.off("events");
+      socket.off("updateAttendees");
+    }
+
   }, [axiosPublic, filter]);
+
+  const handleJoinEvent = (eventId) => {
+    if (eventId) {
+    socket.emit("joinEvent", { eventId });
+  }
+  }
+
 
   if (loading) {
     return <Loading></Loading>;
@@ -36,8 +68,13 @@ const AllEvents = () => {
       {/* Filter thing here */}
       <div className="flex justify-end">
         <div className="dropdown dropdown-end">
-          <div tabIndex={0} role="button" className="btn m-1">Filter By</div>
-          <ul tabIndex={0} className="menu dropdown-content bg-base-100 rounded-box z-[1] w-52 p-2 gap-2 shadow">
+          <div tabIndex={0} role="button" className="btn m-1">
+            Filter By
+          </div>
+          <ul
+            tabIndex={0}
+            className="menu dropdown-content bg-base-100 rounded-box z-[1] w-52 p-2 gap-2 shadow"
+          >
             <li>
               <button
                 className={`btn btn-ghost ${
@@ -78,8 +115,10 @@ const AllEvents = () => {
       {/* Table Div here */}
       <main className="bg-white mt-4 rounded-lg">
         <div className="flex justify-center items-center gap-2">
-            <h1 className="text-center py-6 text-xl font-bold">All Events Here</h1>
-            <Lottie className="w-10" animationData={downArrow}></Lottie>
+          <h1 className="text-center py-6 text-xl font-bold">
+            All Events Here
+          </h1>
+          <Lottie className="w-10" animationData={downArrow}></Lottie>
         </div>
         <div className="overflow-x-auto">
           <table className="table">
@@ -91,29 +130,34 @@ const AllEvents = () => {
                 <th>Event Creator Email</th>
                 <th>Event Date and Time</th>
                 <th>Attendees List</th>
+                <th>Click To Join</th>
               </tr>
             </thead>
             <tbody>
               {events.length === 0 ? (
                 <tr>
-                <td colSpan="5" className="my-4 text-center font-bold text-xl">
-                  No events found
-                </td>
-              </tr>
+                  <td
+                    colSpan="5"
+                    className="my-4 text-center font-bold text-xl"
+                  >
+                    No events found
+                  </td>
+                </tr>
               ) : (
                 events.map((event, idx) => (
                   <tr key={idx}>
                     <th>
-                      <label>
-                        {idx+1}
-                      </label>
+                      <label>{idx + 1}</label>
                     </th>
                     <td>
                       <div className="flex items-center gap-3">
                         <div className="avatar">
                           <div className="mask mask-squircle h-12 w-12">
                             <img
-                              src={event.eventImage || "https://img.daisyui.com/images/profile/demo/2@94.webp"}
+                              src={
+                                event.eventImage ||
+                                "https://img.daisyui.com/images/profile/demo/2@94.webp"
+                              }
                               alt="event image"
                             />
                           </div>
@@ -123,12 +167,17 @@ const AllEvents = () => {
                         </div>
                       </div>
                     </td>
+                    <td>{event.eventEmail}</td>
                     <td>
-                      {event.eventEmail}
+                      {event.eventTime
+                        ? event.eventTime.replace("T", " ")
+                        : "N/A"}
                     </td>
-                    <td>{event.eventTime}</td>
+                    <th>{event.attendees}</th>
                     <th>
-                      {event.attendees}
+                      <button onClick={() => handleJoinEvent(event._id)} className="btn btn-ghost text-xl">
+                        <MdEventSeat />
+                      </button>
                     </th>
                   </tr>
                 ))
