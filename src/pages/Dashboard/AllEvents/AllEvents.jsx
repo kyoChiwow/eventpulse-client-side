@@ -1,14 +1,14 @@
-import { useEffect, useState } from "react";
-import useAxiosPublic from "../../../hooks/useAxiosPublic";
-import Loading from "../../Loading/Loading";
-import downArrow from "../../../assets/animation/down-arrow.json";
 import Lottie from "lottie-react";
+import { useEffect, useState } from "react";
 import { MdEventSeat } from "react-icons/md";
 import { io } from "socket.io-client";
+import downArrow from "../../../assets/animation/down-arrow.json";
+import useAxiosPublic from "../../../hooks/useAxiosPublic";
+import Loading from "../../Loading/Loading";
 
-const socket = io("http://localhost:5000", {
+const socket = io("https://eventpulse-server.vercel.app", {
   withCredentials: true,
-})
+});
 
 const AllEvents = () => {
   const [events, setEvents] = useState([]);
@@ -40,7 +40,9 @@ const AllEvents = () => {
     socket.on("updateAttendees", (updatedEvent) => {
       setEvents((prevEvents) =>
         prevEvents.map((event) =>
-          event._id === updatedEvent.eventId ? { ...event, attendees: updatedEvent.attendees } : event
+          event._id === updatedEvent.eventId
+            ? { ...event, attendees: updatedEvent.attendees }
+            : event
         )
       );
     });
@@ -48,16 +50,14 @@ const AllEvents = () => {
     return () => {
       socket.off("events");
       socket.off("updateAttendees");
-    }
-
+    };
   }, [axiosPublic, filter]);
 
   const handleJoinEvent = (eventId) => {
     if (eventId) {
-    socket.emit("joinEvent", { eventId });
-  }
-  }
-
+      socket.emit("joinEvent", { eventId });
+    }
+  };
 
   if (loading) {
     return <Loading></Loading>;
@@ -175,7 +175,10 @@ const AllEvents = () => {
                     </td>
                     <th>{event.attendees}</th>
                     <th>
-                      <button onClick={() => handleJoinEvent(event._id)} className="btn btn-ghost text-xl">
+                      <button
+                        onClick={() => handleJoinEvent(event._id)}
+                        className="btn btn-ghost text-xl"
+                      >
                         <MdEventSeat />
                       </button>
                     </th>
