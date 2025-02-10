@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import useAuth from "./useAuth";
 
 const axiosInstance = axios.create({
-  baseURL: "https://eventpulse-server.vercel.app",
+  baseURL: "https://eventpulse-server-side.onrender.com",
   withCredentials: true,
 });
 

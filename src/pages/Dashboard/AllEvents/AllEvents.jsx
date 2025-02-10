@@ -6,8 +6,9 @@ import downArrow from "../../../assets/animation/down-arrow.json";
 import useAxiosPublic from "../../../hooks/useAxiosPublic";
 import Loading from "../../Loading/Loading";
 
-const socket = io("https://eventpulse-server.vercel.app", {
+const socket = io("https://eventpulse-server-side.onrender.com", {
   withCredentials: true,
+  transports: ["websocket"],
 });
 
 const AllEvents = () => {
