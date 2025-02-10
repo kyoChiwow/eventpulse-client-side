@@ -14,7 +14,7 @@ const CreateEvents = () => {
     const form = e.target;
     const eventEmail = form.eventEmail.value;
     const eventName = form.eventName.value;
-    const eventTime = form.eventTime.value;
+    const eventTime = new Date(form.eventTime.value);
     const eventDescription = form.eventDescription.value;
     const eventImage = form.eventImage.files[0];
 

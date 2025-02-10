@@ -138,7 +138,7 @@ const AllEvents = () => {
               {events.length === 0 ? (
                 <tr>
                   <td
-                    colSpan="5"
+                    colSpan="6"
                     className="my-4 text-center font-bold text-xl"
                   >
                     No events found
@@ -171,7 +171,7 @@ const AllEvents = () => {
                     <td>{event.eventEmail}</td>
                     <td>
                       {event.eventTime
-                        ? event.eventTime.replace("T", " ")
+                        ? new Date(event.eventTime).toLocaleString()
                         : "N/A"}
                     </td>
                     <th>{event.attendees}</th>

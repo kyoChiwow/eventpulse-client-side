@@ -21,7 +21,7 @@ const Banner = () => {
   const subTitle = "Plan, Organize & Experience Seamless Events".split(" ");
 
   return (
-    <div className="bg-[url('/src/assets/pics/bannerBg.jpg')] h-[800px] bg-cover bg-no-repeat bg-fixed relative">
+    <div className="bg-[url('/pics/bannerBg.jpg')] h-[800px] bg-cover bg-no-repeat bg-fixed relative">
       {/* Black overlay here */}
       <div className="absolute inset-0 bg-black bg-opacity-50 z-0"></div>
       {/* Black overlay here */}
