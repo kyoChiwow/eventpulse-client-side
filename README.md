@@ -4,6 +4,9 @@ A full-stack event management platform that allows users to create, manage, and 
 
 ## Links
 [Event Pulse](https://eventpulse-event-management.web.app)
+Test Credentials - 
+Email: tom@hanks.com
+Password: Shafiqul123
 
 ## Features
 
